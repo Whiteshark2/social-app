@@ -1,0 +1,39 @@
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body .headerPart {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 10vh;
+  width: 100%;
+  background-color: #191b1d;
+}
+
+body .headerPart h1, body .headerPart ul {
+  margin: 0;
+  color: white;
+}
+
+body .headerPart h1 {
+  font-size: 3rem;
+  margin-left: 2rem;
+}
+
+body .headerPart ul {
+  margin-right: 2rem;
+  display: flex;
+  font-size: 1.3rem;
+}
+
+body .headerPart ul li {
+  margin: 0px 10px 0px 10px;
+  list-style: none;
+}
+
+body .headerPart ul li a {
+  color: lime;
+  text-decoration: none;
+}

@@ -5,7 +5,7 @@ const User=require('../model/user')
 
 
 passport.use(new localStrategy({
-    usernameField:email
+    usernameField:'email'
 },function(email,password,done){
     User.findOne({email:email},function(err,user){
         if(err){
@@ -39,5 +39,19 @@ passport.deserializeUser(function(id,done){
     })
 })
 
+
+passport.checkAuthentication=function(req,res,next){
+    if(req.isAuthenticated()){
+    return next();
+    }
+    return res.redirect('/users/sign-in')
+}
+
+passport.setauthenticatedUser=function(req,res,next){
+    if(req.isAuthenticated()){
+        res.locals.user=req.user
+    }
+    return next()
+}
 
 module.exports=passport
