@@ -51,7 +51,7 @@ app.use(session({
         maxAge:1000*60*100
     },
     store: mongoStore.create({
-        mongoUrl:'mongodb://localhost/social_development',
+        mongoUrl:'mongodb://localhost:27017/social_development',
         auotRemove:'disabled'
     },function(err){
         if(err){
