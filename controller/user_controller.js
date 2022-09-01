@@ -28,33 +28,29 @@ module.exports.signin=function(req,res){
     })
 }
 
-module.exports.create=function(req,res){
-    if(req.body.password!=req.body.confirm_password){
-        return res.redirect('back')
-    }
-    User.findOne({email:req.body.email},function(err,user){
-        if(err){
-            console.log(err,"Error in finding user")
-        }
-        if(!user){
-            User.create(req.body,function(err,user){
-                if(err){
-                    console.log(err,"Error in creating user")
-                    return;
-                }
-                return res.redirect('/users/sign-in')
-            })
-        }
-        else{
+module.exports.create=async function(req,res){
+    try{
+        if(req.body.password!=req.body.confirm_password){
             return res.redirect('back')
         }
+        const user= await User.findOne({email:req.body.email})
+            if(!user){
+                const user_create= await User.create(req.body)
+                    return res.redirect('/users/sign-in')
+                }
+    }catch(err){
+        console.log("error in creating user",err)
+        return
+    }
+    }
+        
        
 
-    })
-    
-};
+  
+
 
 module.exports.createSession= function(req,res){
+    req.flash('success',"you have logged in")
    return res.redirect('/')
     // User.findOne({email:req.body.email},function(err,user){
     //     if(err){
@@ -80,16 +76,34 @@ module.exports.destroySession=function(req,res){
         if(err){
         console.log("error in logging out")
         }
+        req.flash('success',"you have Logged out")
         return;
     })
     return res.redirect('/users/sign-in')
     }
 
 module.exports.update=function(req,res){
-    if(req.user.id=req.params.id)
-    User.findByIdAndUpdate(req.params.id,req.body,function(err,user){
-        return res.redirect('back')
-    })
+    if(req.user.id=req.params.id){
+        try{
+            let user=User.findByIdAndUpdate(req.params.id)
+            User.uploadedAvatar(req,res,function(err){
+                if(err){
+                    console.log("error in update *******",err)
+                }
+                user.name=req.body.name
+                user.email=req.body.email
+                if(req.file){
+                    user.avatar=User.avatarPath+'/'+req.file.filename;
+                }
+                user.save()
+                return res.redirect('back');
+            })
+
+        }catch(err){
+            return res.redirect('back')
+
+        }
+    }
     else{
         return res.status(401).send('unauthorised')
     }

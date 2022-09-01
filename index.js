@@ -8,9 +8,13 @@ const cookieParser=require('cookie-parser')
 //used for session cookie
 const passport=require('passport')
 const localStrategy=require('./config/passport-local-strategy')
+const passportJwt=require('./config/passport-jwt-strategy')
+const passportGoogle=require('./config/passport-google-oauth2-strategy')
 const session=require('express-session')
 const mongoStore=require('connect-mongo')
 const sassMiddleware = require('node-sass-middleware');
+const flash=require('connect-flash')
+const customMware=require('./config/middleware')
 
 
 
@@ -35,6 +39,7 @@ app.use(bodyParser.text())
 app.use(bodyParser.urlencoded())
 app.use(cookieParser())
 app.use(express.static('./assets'))
+app.use('/uploads',express.static(__dirname+'/uploads'))
 app.use(expressLayout)
 
 app.set('layout extractStyles',true)
@@ -62,6 +67,8 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 app.use(passport.setauthenticatedUser)
+app.use(flash())
+app.use(customMware.setFlash)
 
 
 app.use('/',require('./routes/index'))
